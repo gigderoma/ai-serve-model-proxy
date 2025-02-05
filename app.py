@@ -60,7 +60,8 @@ def rest_request(data):
     logger.debug("sending the following data " + send_data )  # Print the data to stdout
     response = requests.post(infer_url, json=json_data)
     response_dict = response.json()
-    logger.debug("received following response from model server" + response )  # Print the data to stdout
+    resp = str(response)
+    logger.debug("received following response from model server" + resp )  # Print the data to stdout
     return response_dict['outputs'][0]['data']
 
 # Endpoint
