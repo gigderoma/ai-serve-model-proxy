@@ -1,9 +1,26 @@
 import os
+import logging
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
 
 app = Flask(__name__)
+
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)  # INFO,  # Set the minimum level to capture (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+
+# Create handler for stdout
+stdout_handler = logging.StreamHandler()  # For stdout
+
+# Create formatter
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+stdout_handler.setFormatter(formatter)
+
+# Add handler to the logger
+logger.addHandler(stdout_handler)
+
 
 @app.after_request
 def apply_cors(response):
@@ -40,7 +57,7 @@ def rest_request(data):
     }
 
     send_data = str(json_data)
-    print(f"sending the following data " + send_data  )  # Print the data to stdout
+    logger.debug("sending the following data " + send_data )  # Print the data to stdout
     response = requests.post(infer_url, json=json_data)
     response_dict = response.json()
     return response_dict['outputs'][0]['data']
@@ -50,7 +67,7 @@ def rest_request(data):
 def check_fraud():
     data = request.json
     rec_data = str(data)
-    print(f"Received the following data " + rec_data )  # Print the error message to stdout
+    logger.debug("received the following data " + rec_data )  # Print the error message to stdout
     prediction = rest_request(scaler.transform([data]).tolist()[0]) # place a request to the model server from this service
     threshhold = 0.95
     if (prediction[0] > threshhold):
