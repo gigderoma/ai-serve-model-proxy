@@ -39,7 +39,8 @@ def rest_request(data):
         ]
     }
 
-    print(f"sending the following data {json_data}" )  # Print the error message to stdout
+    send_data = str(json_data)
+    print(f"sending the following data {send_data}" )  # Print the data to stdout
     response = requests.post(infer_url, json=json_data)
     response_dict = response.json()
     return response_dict['outputs'][0]['data']
@@ -48,8 +49,8 @@ def rest_request(data):
 @app.route('/', methods=['POST'])
 def check_fraud():
     data = request.json
-
-    print(f"Received the following data {data}" )  # Print the error message to stdout
+    rec_data = str(data)
+    print(f"Received the following data {rec_data}" )  # Print the error message to stdout
     prediction = rest_request(scaler.transform([data]).tolist()[0]) # place a request to the model server from this service
     threshhold = 0.95
     if (prediction[0] > threshhold):
